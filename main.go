@@ -2,6 +2,7 @@ package main
 
 import (
 	"encoding/json"
+	"html/template"
 	"log"
 	"net/http"
 )
@@ -35,6 +36,23 @@ type H struct {
 	Data interface{} `json:"data,omitempty"`
 }
 
+func RegisterView()  {
+	tpl,err := template.ParseGlob("view/**/*")
+	if err!=nil {
+		//quit and print the err
+		log.Fatal(err.Error())
+	}
+
+	for _,v := range tpl.Templates(){
+		tplname := v.Name()
+
+		http.HandleFunc(tplname,
+			func(writer http.ResponseWriter, request *http.Request) {
+				tpl.ExecuteTemplate(writer, tplname, nil)
+		})
+	}
+}
+
 func Resp(writer http.ResponseWriter,code int, data interface{}, msg string)  {
 	//set header
 	writer.Header().Set("Content-Type","application/json")
@@ -61,6 +79,22 @@ func main() {
 
 	//bind the func and request
 	http.HandleFunc("/user/login",userLogin)
+
+	//support the static resource
+	http.Handle("/asset/", http.FileServer(http.Dir(".")))
+
+	RegisterView()
+
+	//http.HandleFunc("/user/login.shtml",
+	//	func(writer http.ResponseWriter, request *http.Request) {
+	//		tpl,err := template.ParseFiles("view/user/login.html")
+	//		if err!=nil {
+	//			//quit and print the err
+	//			log.Fatal(err.Error())
+	//		}
+	//		tpl.ExecuteTemplate(writer,"/user/login.shtml",nil)
+	//
+	//})
 
 	//start the web server
 	http.ListenAndServe(":8080",nil)
