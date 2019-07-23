@@ -2,10 +2,30 @@ package main
 
 import (
 	"encoding/json"
+	"fmt"
+	_ "github.com/go-sql-driver/mysql"
+	"github.com/go-xorm/xorm"
 	"html/template"
 	"log"
 	"net/http"
 )
+
+var DbEngin *xorm.Engine
+func init(){
+	drivename := "mysql"
+	DsName := "root:root@(127.0.0.1:3306)/imchat?charset=utf8"
+	DbEngin, err := xorm.NewEngine(drivename,DsName)
+	if err!=nil {
+		log.Fatal(err.Error())
+	}
+	//show the sql
+	DbEngin.ShowSQL(true)
+	//set the max connect num
+	DbEngin.SetMaxOpenConns(2)
+	//auto create tables
+	//DbEngin.Sync2(new(User))
+	fmt.Println("init DB connect")
+}
 
 func userLogin(writer http.ResponseWriter, request *http.Request) {
 
