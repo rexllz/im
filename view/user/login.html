@@ -60,8 +60,11 @@
                     if(res.code!=0){
                         mui.toast(res.msg)
                     }else{
+                        var url = "/chat/index.shtml?id="+res.data.id+"&token="+res.data.token
                         //location.replace("//127.0.0.1/demo/index.shtml")
-                        mui.toast("login success")
+                        // mui.toast("login success")
+                        // mui.alert(url)
+                        location.href = url
                     }
                 })
             },

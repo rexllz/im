@@ -49,5 +49,26 @@ func (s* UserService)Register (
 func (s* UserService)Login (
 	mobile,
 	plainpwd string)(user model.User, err error){
-	return user,nil
+
+		tmp := model.User{}
+		//find the user by mobile
+		DbEngin.Where("mobile = ?", mobile).Get(&tmp)
+		//can not find the user
+		if tmp.Id == 0 {
+			return tmp,errors.New("no user")
+		}
+
+		//check the pwd
+		if !util.ValidatePasswd(plainpwd,tmp.Salt,tmp.Passwd){
+			return tmp,errors.New("password wrong")
+		}
+
+		//flush token
+		str := fmt.Sprintf("%d", time.Now().Unix())
+		token := util.MD5Encode(str)
+		tmp.Token = token
+		DbEngin.Id(tmp.Id).Cols("token").Update(&tmp)
+
+
+		return user,nil
 }
