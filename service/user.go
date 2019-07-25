@@ -72,3 +72,13 @@ func (s* UserService)Login (
 
 		return user,nil
 }
+func (s *UserService)Find(
+	userId int64 )(user model.User) {
+
+	//首先通过手机号查询用户
+	tmp :=model.User{
+
+	}
+	DbEngin.ID(userId).Get(&tmp)
+	return tmp
+}

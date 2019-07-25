@@ -36,7 +36,7 @@ func main() {
 	http.HandleFunc("/contact/loadfriend", ctrl.LoadFriend)
 	http.HandleFunc("/contact/joincommunity", ctrl.JoinCommunity)
 	http.HandleFunc("/contact/addfriend", ctrl.Addfriend)
-	//http.HandleFunc("/chat", ctrl.Chat)
+	http.HandleFunc("/chat", ctrl.Chat)
 	//support the static resource
 	http.Handle("/asset/", http.FileServer(http.Dir(".")))
 
