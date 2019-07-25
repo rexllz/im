@@ -23,6 +23,7 @@ func init(){
 	//set the max connect num
 	DbEngin.SetMaxOpenConns(2)
 	//auto create tables
-	DbEngin.Sync2(new(model.User))
+	DbEngin.Sync2(new(model.User),new(model.Contact),new(model.Community))
+
 	fmt.Println("init DB connect")
 }

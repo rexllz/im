@@ -32,7 +32,11 @@ func main() {
 	//bind the func and request
 	http.HandleFunc("/user/login",ctrl.UserLogin)
 	http.HandleFunc("/user/register",ctrl.UserRegister)
-
+	http.HandleFunc("/contact/loadcommunity", ctrl.LoadCommunity)
+	http.HandleFunc("/contact/loadfriend", ctrl.LoadFriend)
+	http.HandleFunc("/contact/joincommunity", ctrl.JoinCommunity)
+	http.HandleFunc("/contact/addfriend", ctrl.Addfriend)
+	//http.HandleFunc("/chat", ctrl.Chat)
 	//support the static resource
 	http.Handle("/asset/", http.FileServer(http.Dir(".")))
 
