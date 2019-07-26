@@ -5,6 +5,7 @@ import (
 	"im/model"
 	"im/service"
 	"im/util"
+	"log"
 	"math/rand"
 	"net/http"
 )
@@ -43,5 +44,8 @@ func UserLogin(writer http.ResponseWriter, request *http.Request) {
 		util.RespFail(writer, err.Error())
 	}else {
 		util.RespOk(writer, user, "")
+		log.Println("---------login----------")
+		log.Println(user.Id)
+		log.Println(user.Token)
 	}
 }

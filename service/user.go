@@ -70,7 +70,7 @@ func (s* UserService)Login (
 		DbEngin.Id(tmp.Id).Cols("token").Update(&tmp)
 
 
-		return user,nil
+		return tmp,nil
 }
 func (s *UserService)Find(
 	userId int64 )(user model.User) {

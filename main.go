@@ -37,8 +37,10 @@ func main() {
 	http.HandleFunc("/contact/joincommunity", ctrl.JoinCommunity)
 	http.HandleFunc("/contact/addfriend", ctrl.Addfriend)
 	http.HandleFunc("/chat", ctrl.Chat)
+	http.HandleFunc("/attach/upload", ctrl.Upload)
 	//support the static resource
 	http.Handle("/asset/", http.FileServer(http.Dir(".")))
+	http.Handle("/mnt/", http.FileServer(http.Dir(".")))
 
 	RegisterView()
 
