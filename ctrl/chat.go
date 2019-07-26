@@ -6,6 +6,7 @@ import (
 	"github.com/gorilla/websocket"
 	"gopkg.in/fatih/set.v0"
 	"log"
+	"net"
 	"net/http"
 	"strconv"
 	"sync"
@@ -160,7 +161,13 @@ func recvproc(node *Node) {
 			return
 		}
 		//todo 对data进一步处理
+		//单体应用
 		dispatch(data)
+
+		//broadcast
+		
+
+
 		fmt.Printf("recv<=%s",data)
 	}
 }
@@ -201,4 +208,66 @@ func checkToken(userId int64,token string)bool{
 	//从数据库里面查询并比对
 	user := userService.Find(userId)
 	return user.Token==token
+}
+
+func init()  {
+	go udpsendproc()
+	go udprecvproc()
+}
+
+var  udpsendchan chan []byte=make(chan []byte,1024)
+//todo 将消息广播到局域网
+func broadMsg(data []byte){
+	udpsendchan<-data
+}
+
+//todo 完成udp数据的发送协程
+func udpsendproc(){
+	log.Println("start udpsendproc")
+	//todo 使用udp协议拨号
+	con,err:=net.DialUDP("udp",nil,
+		&net.UDPAddr{
+			IP:net.IPv4(192,168,0,255),
+			Port:3000,
+		})
+	defer con.Close()
+	if err!=nil{
+		log.Println(err.Error())
+		return
+	}
+	//todo 通过的到的con发送消息
+	//con.Write()
+	for{
+		select {
+		case data := <- udpsendchan:
+			_,err=con.Write(data)
+			if err!=nil{
+				log.Println(err.Error())
+				return
+			}
+		}
+	}
+}
+//todo 完成upd接收并处理功能
+func udprecvproc(){
+	log.Println("start udprecvproc")
+	//todo 监听udp广播端口
+	con,err:=net.ListenUDP("udp",&net.UDPAddr{
+		IP:net.IPv4zero,
+		Port:3000,
+	})
+	defer con.Close()
+	if err!=nil{log.Println(err.Error())}
+	//TODO 处理端口发过来的数据
+	for{
+		var buf [512]byte
+		n,err:=con.Read(buf[0:])
+		if err!=nil{
+			log.Println(err.Error())
+			return
+		}
+		//直接数据处理
+		dispatch(buf[0:n])
+	}
+	log.Println("stop updrecvproc")
 }

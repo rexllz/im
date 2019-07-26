@@ -18,7 +18,7 @@ func init(){
 }
 func Upload(w http.ResponseWriter, r *http.Request){
 	UploadLocal(w,r)
-
+	//UploadOss(w,r)
 }
 
 //1.存储位置 ./mnt,需要确保已经创建好
