@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"im/util"
 	"io"
+	"log"
 	"math/rand"
 	"net/http"
 	"os"
@@ -33,6 +34,7 @@ func UploadLocal(writer http.ResponseWriter,
 	suffix := ".png"
 	//如果前端文件名称包含后缀 xx.xx.png
 	ofilename := head.Filename
+	log.Println("ofilename"+ofilename)
 	tmp := strings.Split(ofilename,".")
 	if len(tmp)>1{
 		suffix = "."+tmp[len(tmp)-1]

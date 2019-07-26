@@ -103,6 +103,15 @@ func Chat(writer http.ResponseWriter,
 		DataQueue:make(chan []byte,50),
 		GroupSets:set.New(set.ThreadSafe),
 	}
+
+	//todo get user's group id
+	//1、当用户接入的时候初始化groupset
+	comIds := contactService.SearchComunityIds(userId)
+	for _,v := range comIds{
+		node.GroupSets.Add(v)
+	}
+
+
 	//todo userid和node形成绑定关系
 	rwlocker.Lock()
 	clientMap[userId]=node
@@ -113,6 +122,20 @@ func Chat(writer http.ResponseWriter,
 	go recvproc(node)
 	//
 	sendMsg(userId,[]byte("hello,world!"))
+}
+
+
+//todo 添加新的群ID到用户的groupset中
+func AddGroupId(userId,gid int64){
+	//取得node
+	rwlocker.Lock()
+	node,ok := clientMap[userId]
+	if ok{
+		node.GroupSets.Add(gid)
+	}
+	//clientMap[userId] = node
+	rwlocker.Unlock()
+	//添加gid到set
 }
 
 //发送协程
@@ -154,7 +177,11 @@ func dispatch(data []byte){
 		sendMsg(msg.Dstid, data)
 	case CMD_ROOM_MSG:
 		//todo
-
+		for _,v := range clientMap{
+			if v.GroupSets.Has(msg.Dstid){
+				v.DataQueue <- data
+			}
+		}
 	case CMD_HEART:
 		//todo
 	}

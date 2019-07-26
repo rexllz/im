@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"time"
 )
-
+//frontend bind struct
 type PageArg struct {
 	//从哪页开始
 	Pagefrom int  `json:"pagefrom" form:"pagefrom"`

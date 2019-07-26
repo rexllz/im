@@ -35,6 +35,7 @@ func main() {
 	http.HandleFunc("/contact/loadcommunity", ctrl.LoadCommunity)
 	http.HandleFunc("/contact/loadfriend", ctrl.LoadFriend)
 	http.HandleFunc("/contact/joincommunity", ctrl.JoinCommunity)
+	http.HandleFunc("/contact/createcommunity", ctrl.CreateCommunity)
 	http.HandleFunc("/contact/addfriend", ctrl.Addfriend)
 	http.HandleFunc("/chat", ctrl.Chat)
 	http.HandleFunc("/attach/upload", ctrl.Upload)

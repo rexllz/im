@@ -83,6 +83,18 @@ func (service *ContactService) SearchComunity(userId int64) ([]model.Community){
 	return coms
 }
 
+func (service *ContactService) SearchComunityIds(userId int64) (comIds []int64){
+	//todo 获取用户全部群ID
+	conconts := make([]model.Contact,0)
+	comIds =make([]int64,0)
+
+	DbEngin.Where("ownerid = ? and cate = ?",userId,model.CONCAT_CATE_COMUNITY).Find(&conconts)
+	for _,v := range conconts{
+		comIds = append(comIds,v.Dstobj);
+	}
+	return comIds
+}
+
 //加群
 func (service *ContactService) JoinCommunity(userId,comId int64) error{
 	cot := model.Contact{
