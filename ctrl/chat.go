@@ -1,6 +1,7 @@
 package ctrl
 
 import (
+	"encoding/json"
 	"fmt"
 	"github.com/gorilla/websocket"
 	"gopkg.in/fatih/set.v0"
@@ -97,6 +98,8 @@ func Chat(writer http.ResponseWriter,
 	//todo 获得conn
 	node := &Node{
 		Conn:conn,
+
+		//transfer Parallel to serial
 		DataQueue:make(chan []byte,50),
 		GroupSets:set.New(set.ThreadSafe),
 	}
@@ -134,12 +137,27 @@ func recvproc(node *Node) {
 			return
 		}
 		//todo 对data进一步处理
+		dispatch(data)
 		fmt.Printf("recv<=%s",data)
 	}
 }
 //todo 参数处理
 func dispatch(data []byte){
+	msg := Message{}
+	err := json.Unmarshal(data,&msg)
+	if err!=nil {
+		log.Println(err.Error())
+		return
+	}
+	switch msg.Cmd {
+	case CMD_SINGLE_MSG:
+		sendMsg(msg.Dstid, data)
+	case CMD_ROOM_MSG:
+		//todo
 
+	case CMD_HEART:
+		//todo
+	}
 }
 
 //todo 发送消息
